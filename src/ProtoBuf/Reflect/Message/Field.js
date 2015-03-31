@@ -607,9 +607,18 @@ FieldPrototype.decode = function(wireType, buffer, skipRepeated) {
             return !!buffer.readVarint32();
 
         // Constant enum value (varint)
-        case ProtoBuf.TYPES["enum"]:
+        case ProtoBuf.TYPES["enum"]: {
             // The following Builder.Message#set will already throw
-            return buffer.readVarint32();
+            var value = buffer.readVarint32();
+            if (ProtoBuf.decodeEnumsToString) {
+                var values = this.resolvedType.getChildren(Enum.Value);
+                for (var i=0; i<values.length; i++)
+                    if (values[i].id == value)
+                        return values[i].name;
+                throw Error("Not a valid enum value "+this.toString(true)+": "+value);
+            }
+            return value;
+        }
 
         // 32bit float
         case ProtoBuf.TYPES["float"]:

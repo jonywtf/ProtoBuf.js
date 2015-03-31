@@ -1376,8 +1376,9 @@
             test.done();
         },
 
-        "negEnumId": function(test) {
+        "negEnumIdInteger": function(test) {
             try {
+                ProtoBuf.decodeEnumsToString = false;
                 test.doesNotThrow(function() {
                     var builder = ProtoBuf.loadProtoFile(__dirname+"/negid.proto");
                     var Test = builder.build("Test");
@@ -1393,6 +1394,28 @@
             } catch (e) {
                 fail(e);
             }
+            test.done();
+        },
+
+        "negEnumIdString": function(test) {
+            try {
+                test.doesNotThrow(function() {
+                    ProtoBuf.decodeEnumsToString = true;
+                    var builder = ProtoBuf.loadProtoFile(__dirname+"/negid.proto");
+                    var Test = builder.build("Test");
+                    test.strictEqual(Test.LobbyType.INVALID, -1);
+                    var t = new Test(Test.LobbyType.INVALID);
+                    test.strictEqual(t.type, -1);
+                    var size = t.calculate();
+                    var bb = t.encode(); // flips
+                    test.strictEqual(bb.remaining(), size);
+                    t = Test.decode(bb);
+                    test.strictEqual(t.type, "INVALID");
+                });
+            } catch (e) {
+                fail(e);
+            }
+            ProtoBuf.decodeEnumsToString = false;
             test.done();
         },
 

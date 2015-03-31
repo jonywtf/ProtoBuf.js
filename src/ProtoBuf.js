@@ -228,6 +228,14 @@
         ProtoBuf.convertFieldsToCamelCase = false;
 
         /**
+         * If set to `true`, enums will be decoded to string. If set to `false`, enums will be decoded to integer. Defaults to `false`.
+         *  Must be set prior to parsing.
+         * @type {boolean}
+         * @expose
+         */
+        ProtoBuf.decodeEnumsToString = false;
+        
+        /**
          * By default, messages are populated with (setX, set_x) accessors for each field. This can be disabled by
          *  setting this to `false` prior to building messages.
          * @type {boolean}
